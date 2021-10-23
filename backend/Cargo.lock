@@ -280,6 +280,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4443176a9f2c162692bd3d352d745ef9413eec5782a80d8fd6f8a1ac692a07f7"
 
 [[package]]
+name = "fizz"
+version = "0.1.0"
+dependencies = [
+ "async-tungstenite",
+ "axum",
+ "http",
+ "postgres-types",
+ "rand",
+ "rust-argon2",
+ "serde",
+ "sqlx",
+ "tokio",
+ "toml",
+ "tower-http 0.1.1 (git+https://github.com/tower-rs/tower-http/?branch=cors)",
+ "validator",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1714,21 +1732,3 @@ name = "winapi-x86_64-pc-windows-gnu"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
-
-[[package]]
-name = "wire"
-version = "0.1.0"
-dependencies = [
- "async-tungstenite",
- "axum",
- "http",
- "postgres-types",
- "rand",
- "rust-argon2",
- "serde",
- "sqlx",
- "tokio",
- "toml",
- "tower-http 0.1.1 (git+https://github.com/tower-rs/tower-http/?branch=cors)",
- "validator",
-]

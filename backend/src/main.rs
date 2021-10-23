@@ -5,7 +5,7 @@ use rand::Rng;
 use sqlx::postgres::Postgres;
 use sqlx::{query, Pool};
 
-use wire::models;
+use fizz::models;
 
 use axum::{
     extract::{Extension, Json},
@@ -24,7 +24,7 @@ use std::sync::Arc;
 use validator::Validate;
 
 #[tokio::main]
-async fn main() -> wire::Res<()> {
+async fn main() -> fizz::Res<()> {
     let contents = std::fs::read_to_string("config.toml").expect("Failed to read config.toml");
     let config: models::Config =
         toml::from_str(&contents).expect("Failed to parse config.toml contents");

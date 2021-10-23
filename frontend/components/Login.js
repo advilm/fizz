@@ -1,8 +1,9 @@
 import React from 'react';
 import { TextField } from '@mui/material';
+import Box from './Box';
 import { LoadingButton }from '@mui/lab';
 import { useSnackbar } from 'notistack';
-import PopUp from './PopUp';
+import Backdrop from './Backdrop';
 import { motion } from 'framer-motion';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -20,7 +21,6 @@ function TextInput({ id, label, formik, ...other }) {
 			variant='outlined'
 			size='small'
 			sx={{ pb: 0.5 }}
-			// sx={{ pb: formik.touched[id] && formik.errors[id] ? .5 : 2 }}
 			{...other}
 		/>
 	);
@@ -85,9 +85,12 @@ export default function Login({ callback, login }) {
 	});
 
 	return (
-		<PopUp callback={callback}>
-			<motion.div
-				className='fixed z-20 left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2 border-2 border-cyan  rounded-md bg-black flex p-5'
+		<Backdrop callback={callback}>
+			<Box
+				onClick={e => e.stopPropagation()}
+				component={motion.div}
+				position='fixed'
+				className='fixed z-20 left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2 border-2 border-cyan rounded-md bg-black flex p-5'
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0, transition: { duration: .25 } }}
@@ -101,7 +104,7 @@ export default function Login({ callback, login }) {
 
 					<LoadingButton type='submit' variant='outlined' size='medium' loading={loading}>{login ? 'Login' : 'Register'}</LoadingButton>
 				</form>
-			</motion.div>
-		</PopUp>
+			</Box>
+		</Backdrop>
 	);
 }

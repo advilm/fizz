@@ -18,6 +18,6 @@ RUN apk add --no-cache libgcc
 WORKDIR /app
 
 COPY config.toml .
-COPY --from=builder /app/target/release/wire /usr/local/bin
+COPY --from=builder /app/target/release/fizz /usr/local/bin
 
-ENTRYPOINT ["/usr/local/bin/wire"]
+ENTRYPOINT ["/usr/local/bin/fizz"]

@@ -1,5 +1,5 @@
 [package]
-name = "wire"
+name = "fizz"
 version = "0.1.0"
 authors = ["Adil Mohiuddin <amohi9046@gmail.com>"]
 edition = "2018"
