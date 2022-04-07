@@ -95,7 +95,7 @@ dependencies = [
  "tokio",
  "tokio-util",
  "tower",
- "tower-http 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tower-http 0.1.1",
  "tower-layer",
  "tower-service",
 ]
@@ -293,7 +293,7 @@ dependencies = [
  "sqlx",
  "tokio",
  "toml",
- "tower-http 0.1.1 (git+https://github.com/tower-rs/tower-http/?branch=cors)",
+ "tower-http 0.2.5",
  "validator",
 ]
 
@@ -512,6 +512,12 @@ dependencies = [
  "http",
  "pin-project-lite",
 ]
+
+[[package]]
+name = "http-range-header"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bfe8eed0a9285ef776bb792479ea3834e8b94e13d615c2f66d03dd50a435a29"
 
 [[package]]
 name = "httparse"
@@ -1407,15 +1413,18 @@ dependencies = [
 
 [[package]]
 name = "tower-http"
-version = "0.1.1"
-source = "git+https://github.com/tower-rs/tower-http/?branch=cors#9f09fc55bf74b5b9a8bd79cbede7e73d37a3e79b"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aba3f3efabf7fb41fae8534fc20a817013dd1c12cb45441efb6c82e6556b4cd8"
 dependencies = [
+ "bitflags",
  "bytes",
  "futures-core",
  "futures-util",
  "http",
  "http-body",
- "pin-project",
+ "http-range-header",
+ "pin-project-lite",
  "tower-layer",
  "tower-service",
 ]
