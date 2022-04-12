@@ -203,6 +203,11 @@
   resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-4.1.2.tgz#21290c24513622df3f701d3bee1a548a3ae7e4b9"
   integrity sha512-Eb47531xlgZlhlkPsesyWGnfH+0mSYtKP5AylXdJAdi9rqC/9bxsEyIJHTUiJmVs+Cr5LvnVblubKBemapGWGg==
 
+"@mantine/form@^4.1.3":
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@mantine/form/-/form-4.1.3.tgz#3f546b35e57b3e970838c03f038d3005f36fbe33"
+  integrity sha512-yHd/lEPVziUwv3yU045ak3Ar/gM1I7WNI9gFtEau2x5VRyLFZzc82c7eUYdNcPlJzJZrBNQffyVh5938jS5mng==
+
 "@mantine/hooks@^4.1.2":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-4.1.2.tgz#7d9af7e505bdfb017a37181ed4061fa66e37cbae"
@@ -880,6 +885,11 @@ domutils@^2.8.0:
     dom-serializer "^1.0.1"
     domelementtype "^2.2.0"
     domhandler "^4.2.0"
+
+dotenv@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.0.tgz#c619001253be89ebb638d027b609c75c26e47411"
+  integrity sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==
 
 duplexer2@^0.1.2:
   version "0.1.4"
@@ -2335,6 +2345,11 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+tabler-icons-react@^1.44.0:
+  version "1.44.0"
+  resolved "https://registry.yarnpkg.com/tabler-icons-react/-/tabler-icons-react-1.44.0.tgz#6536f524e03c765b78078e7f65d3539b946253b6"
+  integrity sha512-AYQQGl55yVe1KHZl+zyDAAwDOcPknKZNC7vgwmjyvpmz4P5Gjb7DtpsOPa1nB0qMYW5Orsrt+1e4qnRoCKgo6A==
 
 text-table@^0.2.0:
   version "0.2.0"
