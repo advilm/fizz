@@ -1,3 +1,4 @@
+import React from 'react';
 import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
 
@@ -8,6 +9,8 @@ export default function App(props) {
         <>
             <Head>
                 <title>Fizz</title>
+                <link rel="fallback icon" href="/logo.png"/>
+                <link rel="icon" href="/logo.svg" type="image/svg+xml"/>
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
             </Head>
 
