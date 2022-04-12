@@ -8,10 +8,10 @@ use axum::{
     extract::{Extension, Json},
     response::IntoResponse,
 };
-use sqlx::{postgres::Postgres, Pool};
-use validator::Validate;
-use std::sync::Arc;
 use fizz::models;
+use sqlx::{postgres::Postgres, Pool};
+use std::sync::Arc;
+use validator::Validate;
 
 pub async fn create_user(
     Json(payload): Json<models::User>,

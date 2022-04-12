@@ -16,7 +16,7 @@ use routes::{auth_user, create_user};
 #[tokio::main]
 async fn main() -> fizz::Res<()> {
     dotenv().ok();
-    
+
     let db_url = std::env::var("DATABASE_URL").unwrap();
     let pool = Pool::<Postgres>::connect(&db_url).await?;
 
