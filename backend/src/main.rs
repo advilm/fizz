@@ -10,6 +10,8 @@ use std::{env, net::SocketAddr, sync::Arc};
 
 use dotenv::dotenv;
 
+use fizz::models::Config;
+
 mod routes;
 use routes::{auth_user, create_user};
 
@@ -17,8 +19,13 @@ use routes::{auth_user, create_user};
 async fn main() -> fizz::Res<()> {
     dotenv().ok();
 
-    let db_url = std::env::var("DATABASE_URL").unwrap();
-    let pool = Pool::<Postgres>::connect(&db_url).await?;
+    let config: Config = Config {
+        port: env::var("PORT").unwrap().parse::<u16>().unwrap(),
+        db_url: env::var("DATABASE_URL").unwrap(),
+        secret: env::var("SECRET").unwrap(),
+    };
+
+    let pool = Pool::<Postgres>::connect(&config.db_url).await?;
 
     let cors = CorsLayer::new()
         .allow_methods(vec![Method::POST])
@@ -26,16 +33,15 @@ async fn main() -> fizz::Res<()> {
         .allow_credentials(false)
         .allow_headers(vec![CONTENT_TYPE]);
 
+    let addr = SocketAddr::from(([0, 0, 0, 0], config.port));
+
     let app = Router::new()
         .route("/users/create", post(create_user))
         .route("/users/auth", post(auth_user))
         .layer(Extension(Arc::new(pool)))
+        .layer(Extension(Arc::new(config)))
         .layer(cors);
 
-    let addr = SocketAddr::from((
-        [0, 0, 0, 0],
-        env::var("PORT").unwrap().parse::<u16>().unwrap(),
-    ));
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await?;
