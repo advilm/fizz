@@ -29,35 +29,34 @@ jobs:
           args: -- --check
           working-directory: backend
 
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          default: true
-      - name: check
-        uses: marcopolo/cargo@master
-        with:
-          command: check
-          working-directory: backend
+  # check:
+  #   runs-on: ubuntu-latest
+  #   services:
+  #     postgres:
+  #       image: postgres
+  #       env:
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_PASSWORD: postgres
+  #         POSTGRES_DATABASE: postgres
+  #       options: >-
+  #         --health-cmd pg_isready
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #       ports:
+  #         - 5432:5432
 
-  build:
-    needs:
-      - format
-      - check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          default: true
-      - name: build
-        uses: marcopolo/cargo@master
-        with:
-          command: build
-          working-directory: backend
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions-rs/toolchain@v1
+  #       with:
+  #         toolchain: stable
+  #         override: true
+  #         default: true
+  #     - name: init_db
+
+  #     - name: check
+  #       uses: marcopolo/cargo@master
+  #       with:
+  #         command: check
+  #         working-directory: backend
