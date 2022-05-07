@@ -6,10 +6,10 @@ import { useRouter } from 'next/router';
 export default function RegisterModal({ opened, setOpened}) {
     const form = useForm({
         initialValues: {
-            email: '',            
+            email: '',
             password: '',
         },
-    
+
         validate: {
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
             password: (value) => (value.length < 8 ? 'Password must be at least 8 characters' : null),
@@ -38,43 +38,45 @@ export default function RegisterModal({ opened, setOpened}) {
             }}
         >
             <LoadingOverlay visible={loading}/>
-            <form 
+            <form
                 onSubmit={form.onSubmit(async values => {
                     setLoading(true);
-                    const request = await fetch('http://localhost:3001/users/auth', 
-                        { 
-                            method: 'POST', 
-                            headers: [['Content-Type', 'application/json']], 
-                            body: JSON.stringify(values) 
+                    const request = await fetch('http://localhost:3001/users/login',
+                        {
+                            method: 'POST',
+                            headers: [['Content-Type', 'application/json']],
+                            body: JSON.stringify(values)
                         });
                     await sleep(1000);
                     setLoading(false);
-                    
-                    if (request.status === 200) {
-                        sendToDash();
-                        setOpened(false);
-                    } else if (request.status == 401) {
+
+                    if (request.status == 401) {
                         form.setFieldError('password', 'Password incorrect');
                     } else if (request.status == 404) {
                         form.setFieldError('email', 'Email not found');
+                    } else if (request.status == 200) {
+                        const token = await request.text();
+                        window.localStorage.setItem('token', token);
+                        setOpened(false);
+                        sendToDash();
                     }
-                })} 
+                })}
                 style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
             >
                 <TextInput
-                    label='Email' 
+                    label='Email'
                     size='md'
-                    sx={{ width: 300 }} 
+                    sx={{ width: 300 }}
                     required
                     data-autofocus
                     {...form.getInputProps('email')}
                 />
 
 
-                <PasswordInput 
-                    label='Password' 
+                <PasswordInput
+                    label='Password'
                     size='md'
-                    sx={{ width: 300 }} 
+                    sx={{ width: 300 }}
                     required
                     {...form.getInputProps('password')}
                 />

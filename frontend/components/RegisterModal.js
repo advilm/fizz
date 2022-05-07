@@ -10,7 +10,7 @@ export default function RegisterModal({ opened, setOpened}) {
             email: '',
             password: '',
         },
-    
+
         validate: {
             username: (value) => (value.length < 5 ? 'Username must be at least 5 characters' : null),
             email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
@@ -40,48 +40,50 @@ export default function RegisterModal({ opened, setOpened}) {
             }}
         >
             <LoadingOverlay visible={loading}/>
-            <form 
+            <form
                 onSubmit={form.onSubmit(async values => {
                     setLoading(true);
-                    const request = await fetch('http://localhost:3001/users/create', 
-                        { 
-                            method: 'POST', 
-                            headers: [['Content-Type', 'application/json']], 
-                            body: JSON.stringify(values) 
+                    const request = await fetch('http://localhost:3001/users/register',
+                        {
+                            method: 'POST',
+                            headers: [['Content-Type', 'application/json']],
+                            body: JSON.stringify(values)
                         });
                     await sleep(1000);
                     setLoading(false);
-                    
+
                     if (request.status === 409) {
                         form.setFieldError('email', 'Email already exists');
                     } else if (request.status === 201) {
-                        sendToDash();
+                        const token = await request.text();
+                        window.localStorage.setItem('token', token);
                         setOpened(false);
+                        sendToDash();
                     }
-                })} 
+                })}
                 style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
             >
                 <TextInput
-                    label='Username' 
-                    size='md' 
-                    sx={{ width: 300 }} 
-                    required 
+                    label='Username'
+                    size='md'
+                    sx={{ width: 300 }}
+                    required
                     data-autofocus
                     {...form.getInputProps('username')}
                 />
-                        
+
                 <TextInput
-                    label='Email' 
+                    label='Email'
                     size='md'
-                    sx={{ width: 300 }} 
-                    required 
+                    sx={{ width: 300 }}
+                    required
                     {...form.getInputProps('email')}
                 />
 
-                <PasswordInput 
-                    label='Password' 
-                    size='md' 
-                    sx={{ width: 300 }} 
+                <PasswordInput
+                    label='Password'
+                    size='md'
+                    sx={{ width: 300 }}
                     required
                     {...form.getInputProps('password')}
                 />

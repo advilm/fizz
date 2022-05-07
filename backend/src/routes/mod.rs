@@ -1,4 +1,5 @@
-mod auth_user;
-mod create_user;
+mod login_user;
+mod register_user;
+mod tasks;
 
-pub use {auth_user::auth_user, create_user::create_user};
+pub use {login_user::login_user, register_user::register_user, tasks::get_tasks};

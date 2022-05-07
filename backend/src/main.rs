@@ -1,19 +1,20 @@
-use axum::routing::post;
-
-use sqlx::{postgres::Postgres, Pool};
-
+use axum::routing::{get, post};
 use axum::{extract::Extension, Router};
-use http::{header::CONTENT_TYPE, Method};
+use dotenv::dotenv;
+use fizz::models::Config;
+use http::{
+    header::{AUTHORIZATION, CONTENT_TYPE},
+    Method,
+};
+use sqlx::{postgres::Postgres, Pool};
+use std::{env, net::SocketAddr, sync::Arc};
 use tower_http::cors::{Any, CorsLayer};
 
-use std::{env, net::SocketAddr, sync::Arc};
-
-use dotenv::dotenv;
-
-use fizz::models::Config;
-
 mod routes;
-use routes::{auth_user, create_user};
+use routes::*;
+
+mod middleware;
+use middleware::*;
 
 #[tokio::main]
 async fn main() -> fizz::Res<()> {
@@ -28,18 +29,20 @@ async fn main() -> fizz::Res<()> {
     let pool = Pool::<Postgres>::connect(&config.db_url).await?;
 
     let cors = CorsLayer::new()
-        .allow_methods(vec![Method::POST])
+        .allow_methods(vec![Method::POST, Method::GET])
         .allow_origin(Any)
         .allow_credentials(false)
-        .allow_headers(vec![CONTENT_TYPE]);
+        .allow_headers(vec![CONTENT_TYPE, AUTHORIZATION]);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], config.port));
 
     let app = Router::new()
-        .route("/users/create", post(create_user))
-        .route("/users/auth", post(auth_user))
-        .layer(Extension(Arc::new(pool)))
+        .route("/tasks", get(get_tasks))
+        .layer(axum::middleware::from_fn(auth))
+        .route("/users/register", post(register_user))
+        .route("/users/login", post(login_user))
         .layer(Extension(Arc::new(config)))
+        .layer(Extension(Arc::new(pool)))
         .layer(cors);
 
     axum::Server::bind(&addr)

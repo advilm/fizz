@@ -3,24 +3,35 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
-use chrono::{Duration, Utc};
-use fizz::models::{Config, LoginUser, Token};
-use jsonwebtoken::{encode, EncodingKey, Header};
+use chrono::Duration;
+use fizz::models::{Config, Token};
+use jsonwebtoken::{encode, get_current_timestamp, EncodingKey, Header};
+use serde::Deserialize;
 use sqlx::{postgres::Postgres, query, Pool};
 use std::sync::Arc;
+use validator::Validate;
 
-pub async fn auth_user(
-    Json(payload): Json<LoginUser>,
-    state: Extension<Arc<Pool<Postgres>>>,
-    config: Extension<Arc<Config>>,
+#[derive(Deserialize, Validate)]
+pub struct Payload {
+    #[validate(email, length(max = 50))]
+    email: String,
+
+    #[validate(length(min = 8, max = 128))]
+    password: String,
+}
+
+pub async fn login_user(
+    Json(payload): Json<Payload>,
+    Extension(db): Extension<Arc<Pool<Postgres>>>,
+    Extension(config): Extension<Arc<Config>>,
 ) -> impl IntoResponse {
-    let state = &*state.0;
+    let db = &*db;
 
     let user_query = query!(
-        r"SELECT username,hash FROM users WHERE email = $1",
+        "SELECT username,hash FROM users WHERE email = $1",
         &payload.email
     )
-    .fetch_optional(state)
+    .fetch_optional(db)
     .await;
 
     if user_query.is_err() {
@@ -34,12 +45,10 @@ pub async fn auth_user(
         let password = payload.password.as_bytes();
 
         if argon2::verify_encoded(&user.hash, password).unwrap() {
+            let month = Duration::weeks(4).num_milliseconds() as u64;
             let token = Token {
                 email: payload.email,
-                exp: Utc::now()
-                    .checked_add_signed(Duration::weeks(4))
-                    .unwrap()
-                    .timestamp_millis(),
+                exp: get_current_timestamp() + month,
             };
 
             let token = encode(
