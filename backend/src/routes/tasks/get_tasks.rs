@@ -1,15 +1,15 @@
 use axum::{extract::Extension, response::IntoResponse, Json};
 use fizz::models::Task;
-use sqlx::{query, Pool, Postgres};
+use sqlx::{query, types::Uuid, Pool, Postgres};
 use std::sync::Arc;
 
 pub async fn get_tasks(
-    Extension(email): Extension<String>,
+    Extension(uuid): Extension<Uuid>,
     Extension(db): Extension<Arc<Pool<Postgres>>>,
 ) -> impl IntoResponse {
     let db = &*db;
 
-    let user_query = query!("SELECT * FROM tasks WHERE email = $1", &email)
+    let user_query = query!("SELECT * FROM tasks WHERE user_id = $1", uuid)
         .fetch_all(db)
         .await
         .unwrap();

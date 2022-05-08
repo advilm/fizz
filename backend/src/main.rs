@@ -34,7 +34,6 @@ async fn main() -> fizz::Res<()> {
     let cors = CorsLayer::new()
         .allow_methods(vec![Method::POST, Method::GET])
         .allow_origin(Any)
-        .allow_credentials(false)
         .allow_headers(vec![CONTENT_TYPE, AUTHORIZATION]);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], config.port));

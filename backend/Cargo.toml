@@ -13,8 +13,9 @@ jsonwebtoken = "8.1.0"
 rand = "0.8.5"
 rust-argon2 = "1.0.0"
 serde = "1.0.136"
-sqlx = { version = "0.5.11", features = ["postgres", "runtime-tokio-rustls", "time"] }
+sqlx = { version = "0.5.11", features = ["postgres", "runtime-tokio-rustls", "time", "uuid"] }
 tokio = { version = "1.17.0", features = ["full"] }
 tower = "0.4.12"
 tower-http = { version = "0.2.5", features = ["cors"] }
+uuid = { version = "1.0.0", features = ["v4", "fast-rng", "serde"] }
 validator = { version = "0.14.0", features = ["derive"] }

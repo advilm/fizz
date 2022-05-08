@@ -10,13 +10,11 @@ use rand::Rng;
 use serde::Deserialize;
 use sqlx::{postgres::Postgres, query, Pool};
 use std::sync::Arc;
+use uuid::Uuid;
 use validator::Validate;
 
 #[derive(Deserialize, Validate)]
 pub struct Payload {
-    #[validate(email, length(max = 50))]
-    email: String,
-
     #[validate(length(min = 5, max = 32))]
     username: String,
 
@@ -35,8 +33,8 @@ pub async fn register_user(
         return (StatusCode::BAD_REQUEST, "Validation Error".to_string());
     }
 
-    let user_query = query("SELECT 1 FROM users WHERE email = $1")
-        .bind(&payload.email)
+    let user_query = query("SELECT 1 FROM users WHERE username = $1")
+        .bind(&payload.username)
         .fetch_optional(db)
         .await;
 
@@ -54,13 +52,17 @@ pub async fn register_user(
     let a_config = argon2::Config::default();
     let hash = argon2::hash_encoded(password, salt, &a_config).unwrap();
 
-    if query("INSERT INTO users (email, username, hash) VALUES ($1, $2, $3);")
-        .bind(&payload.email)
-        .bind(&payload.username)
-        .bind(&hash)
-        .execute(db)
-        .await
-        .is_err()
+    let uuid = Uuid::new_v4();
+
+    if query!(
+        "INSERT INTO users (id, username, hash) VALUES ($1, $2, $3)",
+        sqlx::types::Uuid::from_u128_le(uuid.to_u128_le()),
+        &payload.username,
+        &hash
+    )
+    .execute(db)
+    .await
+    .is_err()
     {
         return (
             StatusCode::SERVICE_UNAVAILABLE,
@@ -70,7 +72,7 @@ pub async fn register_user(
 
     let month = Duration::weeks(4).num_milliseconds() as u64;
     let token = Token {
-        email: payload.email,
+        uuid: uuid.as_u128(),
         exp: get_current_timestamp() + month,
     };
 

@@ -13,8 +13,8 @@ use validator::Validate;
 
 #[derive(Deserialize, Validate)]
 pub struct Payload {
-    #[validate(email, length(max = 50))]
-    email: String,
+    #[validate(length(min = 5, max = 32))]
+    username: String,
 
     #[validate(length(min = 8, max = 128))]
     password: String,
@@ -27,9 +27,13 @@ pub async fn login_user(
 ) -> impl IntoResponse {
     let db = &*db;
 
+    if payload.validate().is_err() {
+        return (StatusCode::BAD_REQUEST, "Validation Error".to_string());
+    }
+
     let user_query = query!(
-        "SELECT username,hash FROM users WHERE email = $1",
-        &payload.email
+        "SELECT id,username,hash FROM users WHERE username = $1",
+        &payload.username
     )
     .fetch_optional(db)
     .await;
@@ -47,7 +51,7 @@ pub async fn login_user(
         if argon2::verify_encoded(&user.hash, password).unwrap() {
             let month = Duration::weeks(4).num_milliseconds() as u64;
             let token = Token {
-                email: payload.email,
+                uuid: user.id.as_u128(),
                 exp: get_current_timestamp() + month,
             };
 

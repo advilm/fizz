@@ -1,12 +1,12 @@
 CREATE TABLE users (
-  email         TEXT NOT NULL PRIMARY KEY,
+  id            UUID PRIMARY KEY,
   username      TEXT NOT NULL,
   hash          TEXT NOT NULL
 );
 
 CREATE TABLE tasks (
   id            SERIAL PRIMARY KEY,
-  email         TEXT NOT NULL REFERENCES users(email),
+  user_id       UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title         TEXT NOT NULL,
   description   TEXT NOT NULL,
   priority      INTEGER NOT NULL,

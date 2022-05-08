@@ -7,6 +7,7 @@ use axum::{
 };
 use fizz::models::{Config, Token};
 use jsonwebtoken::{decode, errors::Error, Algorithm, DecodingKey, TokenData, Validation};
+use sqlx::types::Uuid;
 
 pub async fn auth<B>(mut req: Request<B>, next: Next<B>) -> impl IntoResponse {
     let config: &Arc<Config> = req.extensions().get().unwrap();
@@ -23,7 +24,8 @@ pub async fn auth<B>(mut req: Request<B>, next: Next<B>) -> impl IntoResponse {
     };
 
     if let Ok(user) = verify_token(auth_header, &config.secret).await {
-        req.extensions_mut().insert(user.claims.email);
+        req.extensions_mut()
+            .insert(Uuid::from_u128(user.claims.uuid));
         Ok(next.run(req).await)
     } else {
         Err(StatusCode::UNAUTHORIZED)

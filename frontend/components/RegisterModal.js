@@ -7,13 +7,12 @@ export default function RegisterModal({ opened, setOpened}) {
     const form = useForm({
         initialValues: {
             username: '',
-            email: '',
             password: '',
         },
 
         validate: {
-            username: (value) => (value.length < 5 ? 'Username must be at least 5 characters' : null),
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            username: (value) =>
+                value.length < 5 || value.length > 32 ? 'Username must be between 5 and 32 characters' : null,
             password: (value) => (value.length < 8 ? 'Password must be at least 8 characters' : null),
         },
     });
@@ -53,7 +52,7 @@ export default function RegisterModal({ opened, setOpened}) {
                     setLoading(false);
 
                     if (request.status === 409) {
-                        form.setFieldError('email', 'Email already exists');
+                        form.setFieldError('username', 'Username already taken');
                     } else if (request.status === 201) {
                         const token = await request.text();
                         window.localStorage.setItem('token', token);
@@ -70,14 +69,6 @@ export default function RegisterModal({ opened, setOpened}) {
                     required
                     data-autofocus
                     {...form.getInputProps('username')}
-                />
-
-                <TextInput
-                    label='Email'
-                    size='md'
-                    sx={{ width: 300 }}
-                    required
-                    {...form.getInputProps('email')}
                 />
 
                 <PasswordInput

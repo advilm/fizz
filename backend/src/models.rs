@@ -8,7 +8,7 @@ pub struct Config {
 
 #[derive(Serialize, Deserialize)]
 pub struct Token {
-    pub email: String,
+    pub uuid: u128,
     pub exp: u64,
 }
 

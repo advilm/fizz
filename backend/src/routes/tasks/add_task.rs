@@ -1,11 +1,12 @@
 use axum::{extract::Extension, response::IntoResponse, Json};
+use http::StatusCode;
 use serde::Deserialize;
-use sqlx::{query, Pool, Postgres};
+use sqlx::{query, types::Uuid, Pool, Postgres};
 use std::sync::Arc;
 use validator::Validate;
 
 #[derive(Deserialize, Validate)]
-pub struct NewTask {
+pub struct Payload {
     #[validate(length(min = 1, max = 300))]
     title: String,
     description: String,
@@ -20,27 +21,31 @@ pub struct NewTask {
 }
 
 pub async fn add_task(
-    Json(task): Json<NewTask>,
-    Extension(email): Extension<String>,
+    Json(payload): Json<Payload>,
+    Extension(uuid): Extension<Uuid>,
     Extension(db): Extension<Arc<Pool<Postgres>>>,
 ) -> impl IntoResponse {
     let db = &*db;
 
+    if payload.validate().is_err() {
+        return (StatusCode::BAD_REQUEST, "Validation Error");
+    }
+
     query!(
-        r#"INSERT INTO tasks (email, title, description, priority, time_estimate, due, completed, color)
+        r#"INSERT INTO tasks (user_id, title, description, priority, time_estimate, due, completed, color)
         values ($1, $2, $3, $4, $5, $6, $7, $8)"#,
-        email,
-        task.title,
-        task.description,
-        task.priority,
-        task.time_estimate,
-        task.due,
+        uuid,
+        payload.title,
+        payload.description,
+        payload.priority,
+        payload.time_estimate,
+        payload.due,
         false,
-        task.color
+        payload.color
     )
     .execute(db)
     .await
     .unwrap();
 
-    "Task added"
+    (StatusCode::OK, "Task added")
 }

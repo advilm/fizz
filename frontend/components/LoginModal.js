@@ -6,12 +6,13 @@ import { useRouter } from 'next/router';
 export default function RegisterModal({ opened, setOpened}) {
     const form = useForm({
         initialValues: {
-            email: '',
+            username: '',
             password: '',
         },
 
         validate: {
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            username: (value) =>
+                value.length < 5 || value.length > 32 ? 'Username must be between 5 and 32 characters' : null,
             password: (value) => (value.length < 8 ? 'Password must be at least 8 characters' : null),
         },
     });
@@ -53,7 +54,7 @@ export default function RegisterModal({ opened, setOpened}) {
                     if (request.status == 401) {
                         form.setFieldError('password', 'Password incorrect');
                     } else if (request.status == 404) {
-                        form.setFieldError('email', 'Email not found');
+                        form.setFieldError('username', 'User not found');
                     } else if (request.status == 200) {
                         const token = await request.text();
                         window.localStorage.setItem('token', token);
@@ -64,12 +65,12 @@ export default function RegisterModal({ opened, setOpened}) {
                 style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
             >
                 <TextInput
-                    label='Email'
+                    label='Username'
                     size='md'
                     sx={{ width: 300 }}
                     required
                     data-autofocus
-                    {...form.getInputProps('email')}
+                    {...form.getInputProps('username')}
                 />
 
 
