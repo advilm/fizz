@@ -25,8 +25,6 @@ pub async fn add_task(
     Extension(uuid): Extension<Uuid>,
     Extension(db): Extension<Arc<Pool<Postgres>>>,
 ) -> impl IntoResponse {
-    let db = &*db;
-
     if payload.validate().is_err() {
         return (StatusCode::BAD_REQUEST, "Validation Error");
     }
@@ -43,7 +41,7 @@ pub async fn add_task(
         false,
         payload.color
     )
-    .execute(db)
+    .execute(db.as_ref())
     .await
     .unwrap();
 

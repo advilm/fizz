@@ -25,8 +25,6 @@ pub async fn login_user(
     Extension(db): Extension<Arc<Pool<Postgres>>>,
     Extension(config): Extension<Arc<Config>>,
 ) -> impl IntoResponse {
-    let db = &*db;
-
     if payload.validate().is_err() {
         return (StatusCode::BAD_REQUEST, "Validation Error".to_string());
     }
@@ -35,7 +33,7 @@ pub async fn login_user(
         "SELECT id,username,hash FROM users WHERE username = $1",
         &payload.username
     )
-    .fetch_optional(db)
+    .fetch_optional(db.as_ref())
     .await;
 
     if user_query.is_err() {

@@ -27,7 +27,7 @@ pub async fn register_user(
     Extension(db): Extension<Arc<Pool<Postgres>>>,
     Extension(config): Extension<Arc<Config>>,
 ) -> impl IntoResponse {
-    let db = &*db;
+    let db = db.as_ref();
 
     if payload.validate().is_err() {
         return (StatusCode::BAD_REQUEST, "Validation Error".to_string());
@@ -52,11 +52,11 @@ pub async fn register_user(
     let a_config = argon2::Config::default();
     let hash = argon2::hash_encoded(password, salt, &a_config).unwrap();
 
-    let uuid = Uuid::new_v4();
+    let uuid = Uuid::new_v4().as_u128();
 
     if query!(
         "INSERT INTO users (id, username, hash) VALUES ($1, $2, $3)",
-        sqlx::types::Uuid::from_u128_le(uuid.to_u128_le()),
+        sqlx::types::Uuid::from_u128(uuid),
         &payload.username,
         &hash
     )
@@ -72,7 +72,7 @@ pub async fn register_user(
 
     let month = Duration::weeks(4).num_milliseconds() as u64;
     let token = Token {
-        uuid: uuid.as_u128(),
+        uuid,
         exp: get_current_timestamp() + month,
     };
 
