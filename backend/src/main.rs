@@ -1,5 +1,8 @@
-use axum::routing::{get, post};
-use axum::{extract::Extension, Router};
+use axum::{
+    extract::Extension,
+    routing::{get, post},
+    Router,
+};
 use dotenv::dotenv;
 use fizz::models::Config;
 use http::{
@@ -37,7 +40,8 @@ async fn main() -> fizz::Res<()> {
     let addr = SocketAddr::from(([0, 0, 0, 0], config.port));
 
     let app = Router::new()
-        .route("/tasks", get(get_tasks))
+        .route("/tasks/add", post(add_task))
+        .route("/tasks/fetch", get(get_tasks))
         .layer(axum::middleware::from_fn(auth))
         .route("/users/register", post(register_user))
         .route("/users/login", post(login_user))

@@ -12,7 +12,7 @@ export default function Home() {
         if (!key) {
             router.push('/');
         } else {
-            fetch('http://localhost:3001/tasks',
+            fetch('http://localhost:3001/tasks/fetch',
                 {
                     method: 'GET',
                     headers: [['Authorization', `${key}`]]
