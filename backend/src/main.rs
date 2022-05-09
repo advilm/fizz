@@ -1,6 +1,6 @@
 use axum::{
     extract::Extension,
-    routing::{get, post},
+    routing::{get, post, put},
     Router,
 };
 use dotenv::dotenv;
@@ -32,13 +32,14 @@ async fn main() -> fizz::Res<()> {
     let pool = Pool::<Postgres>::connect(&config.db_url).await?;
 
     let cors = CorsLayer::new()
-        .allow_methods(vec![Method::POST, Method::GET])
+        .allow_methods(vec![Method::POST, Method::GET, Method::PUT])
         .allow_origin(Any)
         .allow_headers(vec![CONTENT_TYPE, AUTHORIZATION]);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], config.port));
 
     let app = Router::new()
+        .route("/tasks/edit", put(edit_task))
         .route("/tasks/add", post(add_task))
         .route("/tasks/fetch", get(get_tasks))
         .layer(axum::middleware::from_fn(auth))
