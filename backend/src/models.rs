@@ -20,6 +20,7 @@ pub struct Task {
     pub priority: i32,
     pub time_estimate: i32,
     pub due: i64,
+    pub recurring: i16,
     pub completed: bool,
     pub color: i32,
 }

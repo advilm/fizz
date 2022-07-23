@@ -17,6 +17,8 @@ pub struct Payload {
     time_estimate: i32,
     #[validate(range(min = 0))]
     due: i64,
+    #[validate(range(min = 0))]
+    recurring: i16,
     completed: bool,
     #[validate(range(min = 0, max = 16777215))]
     color: i32,
@@ -33,8 +35,8 @@ pub async fn edit_task(
 
     query!(
         r#"UPDATE tasks SET title = $1, description = $2, priority = $3,
-        time_estimate = $4, due = $5, completed = $6, color = $7
-        WHERE id = $8 AND user_id = $9"#,
+        time_estimate = $4, due = $5, completed = $6, color = $7, recurring = $8
+        WHERE id = $9 AND user_id = $10"#,
         payload.title,
         payload.description,
         payload.priority,
@@ -42,8 +44,9 @@ pub async fn edit_task(
         payload.due,
         payload.completed,
         payload.color,
+        payload.recurring,
         payload.id,
-        uuid
+        uuid,
     )
     .execute(db.as_ref())
     .await

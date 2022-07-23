@@ -12,6 +12,7 @@ CREATE TABLE tasks (
   priority      INTEGER NOT NULL,
   time_estimate INTEGER NOT NULL,
   due           BIGINT NOT NULL,
+  recurring     SMALLINT NOT NULL,
   completed     BOOLEAN NOT NULL,
   color         INTEGER NOT NULL
 );

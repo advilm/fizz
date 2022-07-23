@@ -36,6 +36,7 @@ pub async fn get_tasks(
             priority: task.priority,
             time_estimate: task.time_estimate,
             due: task.due,
+            recurring: task.recurring,
             completed: task.completed,
             color: task.color,
         })

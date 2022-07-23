@@ -16,6 +16,8 @@ pub struct Payload {
     time_estimate: i32,
     #[validate(range(min = 0))]
     due: i64,
+    #[validate(range(min = 0, max = 3))]
+    recurring: i16,
     #[validate(range(min = 0, max = 16777215))]
     color: i32,
 }
@@ -30,14 +32,15 @@ pub async fn add_task(
     }
 
     query!(
-        r#"INSERT INTO tasks (user_id, title, description, priority, time_estimate, due, completed, color)
-        values ($1, $2, $3, $4, $5, $6, $7, $8)"#,
+        r#"INSERT INTO tasks (user_id, title, description, priority, time_estimate, due, recurring, completed, color)
+        values ($1, $2, $3, $4, $5, $6, $7, $8, $9)"#,
         uuid,
         payload.title,
         payload.description,
         payload.priority,
         payload.time_estimate,
         payload.due,
+        payload.recurring,
         false,
         payload.color
     )
