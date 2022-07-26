@@ -1,48 +1,27 @@
-import { AppShell, Text, Center, useMantineTheme } from '@mantine/core';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { AppShell, Center, useMantineTheme } from '@mantine/core';
+import TaskList from '../components/TaskList';
 import Header from '../components/Header';
 
 export default function Home() {
     const theme = useMantineTheme();
-    const router = useRouter();
-
-    useEffect(() => {
-        const key = window.localStorage.getItem('token');
-        if (!key) {
-            router.push('/');
-        } else {
-            fetch('http://localhost:3001/tasks/fetch',
-                {
-                    method: 'GET',
-                    headers: [['Authorization', `${key}`]]
-                })
-                .then(res => {
-                    if (res.status === 401) {
-                        router.push('/');
-                    }
-                });
-        }
-    });
 
     return (
         <AppShell
             sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
             padding="md"
-            header={<Header/>}
+            header={<Header dash/>}
             styles={{
                 body: {
                     flex: 1
                 },
                 main: {
-                    backgroundColor: theme.colors.dark[8]
+                    backgroundColor: theme.colors.dark[8],
+                    padding: 0
                 }
             }}
         >
             <Center>
-                <Text>
-                test
-                </Text>
+                <TaskList></TaskList>
             </Center>
         </AppShell>
     );

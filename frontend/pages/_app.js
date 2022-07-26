@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
+import  { RecoilRoot } from 'recoil';
 
 export default function App(props) {
     const { Component, pageProps } = props;
@@ -21,7 +22,9 @@ export default function App(props) {
                     colorScheme: 'dark',
                 }}
             >
-                <Component {...pageProps} />
+                <RecoilRoot>
+                    <Component {...pageProps} />
+                </RecoilRoot>
             </MantineProvider>
         </>
     );
