@@ -2,6 +2,7 @@ import { TextInput, PasswordInput, Button, Modal, LoadingOverlay } from '@mantin
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { sleep } from '../lib/util';
 
 export default function RegisterModal({ opened, setOpened}) {
     const form = useForm({
@@ -11,18 +12,15 @@ export default function RegisterModal({ opened, setOpened}) {
         },
 
         validate: {
-            username: (value) =>
+            username: value =>
                 value.length < 5 || value.length > 32 ? 'Username must be between 5 and 32 characters' : null,
-            password: (value) => (value.length < 8 ? 'Password must be at least 8 characters' : null),
+            password: value => (value.length < 8 ? 'Password must be at least 8 characters' : null),
         },
     });
 
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
-    const sendToDash = () => {
-        router.push('/dash');
-    };
 
     return (
         <Modal
@@ -59,7 +57,8 @@ export default function RegisterModal({ opened, setOpened}) {
                         const token = await request.text();
                         window.localStorage.setItem('token', token);
                         setOpened(false);
-                        sendToDash();
+                        form.reset();
+                        router.push('/dash');
                     }
                 })}
                 style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
@@ -86,8 +85,4 @@ export default function RegisterModal({ opened, setOpened}) {
             </form>
         </Modal>
     );
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
